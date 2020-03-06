@@ -1,0 +1,38 @@
+version: '3.5'
+
+services:
+  # ###################################################################################################################
+  # NOTICE: You have to run local/docker-compose.yml file first, which have some services like: activemq, redis, mysql#
+  # ###################################################################################################################
+
+  servicea:
+    #image: docker_collector:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile_servicea
+    container_name: "servicea"
+    ports:
+      - "8081:8081"
+#    networks:
+#      - proxynetwork
+    links:
+      - serviceb
+    environment:
+      BASEURL: http://172.17.0.1:8082
+
+  serviceb:
+    image: demo_kubernetes_serviceb:latest
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile_serviceb
+    container_name: "serviceb"
+    ports:
+      - "8082:8082"
+#    networks:
+#      - proxynetwork
+
+networks:
+  proxynetwork:
+    driver: bridge
+    name: custom_network
+
